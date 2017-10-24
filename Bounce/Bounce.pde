@@ -11,11 +11,12 @@ int state;
 int bounceCounter;
 
 void setup() {
-  size(800, 800);
+  //size(800, 800);
+  fullScreen();
 
   state = 0;
   bounceCounter = 0;
-  numberOfBalls = 3;
+  numberOfBalls = 10;
 
   //declare where the button should be
   buttonX = width/2;
@@ -42,8 +43,8 @@ void setup() {
   //set values for ball
   for (int i = 0; i < numberOfBalls; i++) {
     ballX[i] = random(ballSize[i], width-ballSize[i]);
-    ballY[i] = random(ballSize[i], width-ballSize[i]);
-    ballSize[i] = 100;//random(10,100);
+    ballY[i] = random(ballSize[i], height-ballSize[i]);
+    ballSize[i] = random(10,100);
     dxBall[i] = random(-20, 20);
     dyBall[i] = random(-20, 20);
     r[i] = random(255);
@@ -159,10 +160,23 @@ void detectOtherBall() {
         
         if (distanceBetweenBalls <= sumOfRadii) {
           bounceCounter++;
-          dxBall[i] *= -1;
-          dyBall[i] *= -1;
-          //dxBall[o] *= -1;
-          //dyBall[o] *= -1;
+          
+          float tempdx = dxBall[i];
+          float tempdy = dyBall[i];
+          
+          dxBall[i] = dxBall[o];//*= -1;
+          dyBall[i] = dxBall[o];//*= -1;
+          
+          dxBall[o] = tempdx;
+          dyBall[o] = tempdy;
+          
+          //Hacky method
+          //move by one step to avoid a second collision
+          ballX[i] += dxBall[i];
+          ballY[i] += dyBall[i];
+          
+          ballX[o] += dxBall[o];
+          ballY[o] += dyBall[o];
         }
       }
     }
